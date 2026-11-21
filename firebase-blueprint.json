@@ -1,0 +1,101 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Private creator account profile, subscription tier, credits, and studio preferences for a signed-in FOFO AI user.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Firebase Auth UID matching the document ID.",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "name": {
+          "type": "string",
+          "description": "Creator display name.",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Creator email address (PII, restricted to owner or admin).",
+          "minLength": 3,
+          "maxLength": 160
+        },
+        "plan": {
+          "type": "string",
+          "enum": ["free", "pro", "business"],
+          "description": "Current subscription plan."
+        },
+        "creditsRemaining": {
+          "type": "integer",
+          "description": "Remaining generation credits for free tier users."
+        },
+        "maxCredits": {
+          "type": "integer",
+          "description": "Maximum generation credits for the current cycle."
+        },
+        "renewalDate": {
+          "type": "string",
+          "description": "Human-readable renewal date label.",
+          "maxLength": 80
+        },
+        "theme": {
+          "type": "string",
+          "enum": ["system", "light", "deep-night", "neon-contrast"],
+          "description": "Studio visual theme preference."
+        },
+        "installedApp": {
+          "type": "boolean",
+          "description": "Whether the user created or linked their account after installing the app."
+        },
+        "paymentProvider": {
+          "type": "string",
+          "enum": ["visa", "stripe", "paypal"],
+          "description": "Last used payment provider."
+        },
+        "billingCycle": {
+          "type": "string",
+          "enum": ["monthly", "annual"],
+          "description": "Billing cycle for paid plans."
+        },
+        "cardLast4": {
+          "type": "string",
+          "description": "Last 4 digits of payment card if Visa was used.",
+          "maxLength": 4
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the account profile was created."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when the account profile was last updated."
+        }
+      },
+      "required": [
+        "uid",
+        "name",
+        "email",
+        "plan",
+        "creditsRemaining",
+        "maxCredits",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/UserProfile"
+      },
+      "description": "Private user account profiles keyed by Firebase Auth UID. Strictly isolated to owner (and verified bootstrap admin)."
+    }
+  }
+}

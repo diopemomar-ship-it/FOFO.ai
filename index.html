@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FOFO AI - Création de Vidéos par IA</title>
+    <meta name="description" content="Transformez vos idées et textes en vidéos percutantes pour TikTok, YouTube Shorts et Instagram Reels avec voix off IA, sous-titres animés et styles cinématiques." />
+    <meta property="og:title" content="FOFO AI - Création de Vidéos par IA" />
+    <meta property="og:description" content="Transformez vos idées et textes en vidéos percutantes pour TikTok, YouTube Shorts et Instagram Reels avec voix off IA, sous-titres animés et styles cinématiques." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script>
+      (function () {
+        try {
+          var pref = 'system';
+          var savedUser = localStorage.getItem('fofo_user');
+          if (savedUser) {
+            var parsed = JSON.parse(savedUser);
+            if (parsed && parsed.theme) pref = parsed.theme;
+          }
+          if (pref === 'system') {
+            var savedTheme = localStorage.getItem('fofo_theme');
+            if (savedTheme) pref = savedTheme;
+          }
+          var systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var resolved = pref === 'system' ? (systemDark ? 'deep-night' : 'light') : pref;
+          var root = document.documentElement;
+          if (resolved === 'light') {
+            root.classList.remove('dark', 'theme-neon-contrast');
+            root.classList.add('light');
+            root.style.colorScheme = 'light';
+          } else {
+            root.classList.remove('light');
+            root.classList.add('dark');
+            root.style.colorScheme = 'dark';
+            if (resolved === 'neon-contrast') root.classList.add('theme-neon-contrast');
+          }
+          root.setAttribute('data-theme', resolved);
+        } catch (e) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="FOFO AI" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="apple-touch-icon" href="/icon.svg" />
+  </head>
+  <body class="bg-zinc-50 dark:bg-black text-zinc-900 dark:text-zinc-100 antialiased selection:bg-[#0095F6] selection:text-white min-h-screen overflow-x-hidden font-sans transition-colors duration-200">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Clear any previous service worker cache
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then((registrations) => {
+          for (const reg of registrations) {
+            reg.unregister();
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
+

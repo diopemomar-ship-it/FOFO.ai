@@ -1,0 +1,112 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net (Default Deny)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Reusable Hardened Helpers
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(userId) {
+      return isVerified() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isVerified() && request.auth.token.email == 'diopemomar@gmail.com';
+    }
+
+    function isValidUserProfile(data, userId) {
+      return data.keys().hasAll([
+          'uid',
+          'name',
+          'email',
+          'plan',
+          'creditsRemaining',
+          'maxCredits',
+          'createdAt',
+          'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'uid',
+          'name',
+          'email',
+          'plan',
+          'creditsRemaining',
+          'maxCredits',
+          'renewalDate',
+          'theme',
+          'installedApp',
+          'paymentProvider',
+          'billingCycle',
+          'cardLast4',
+          'createdAt',
+          'updatedAt'
+        ])
+        && isValidId(data.uid)
+        && data.uid == userId
+        && data.name is string && data.name.size() >= 1 && data.name.size() <= 80
+        && data.email is string && data.email.size() >= 3 && data.email.size() <= 160
+        && data.plan in ['free', 'pro', 'business']
+        && data.creditsRemaining is int && data.creditsRemaining >= 0 && data.creditsRemaining <= 100000
+        && data.maxCredits is int && data.maxCredits >= 1 && data.maxCredits <= 100000
+        && (!('renewalDate' in data) || (data.renewalDate is string && data.renewalDate.size() <= 80))
+        && (!('theme' in data) || (data.theme in ['system', 'light', 'deep-night', 'neon-contrast']))
+        && (!('installedApp' in data) || (data.installedApp is bool))
+        && (!('paymentProvider' in data) || (data.paymentProvider in ['visa', 'stripe', 'paypal']))
+        && (!('billingCycle' in data) || (data.billingCycle in ['monthly', 'annual']))
+        && (!('cardLast4' in data) || (data.cardLast4 is string && data.cardLast4.size() <= 4))
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    match /users/{userId} {
+      allow get: if isValidId(userId) && (isOwner(userId) || isAdmin());
+      allow list: if isAdmin();
+
+      allow create: if isValidId(userId)
+        && (isOwner(userId) || isAdmin())
+        && isValidUserProfile(incoming(), userId)
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time
+        && (isAdmin() || (incoming().plan == 'free' && incoming().creditsRemaining <= 3 && incoming().maxCredits == 3));
+
+      allow update: if isValidId(userId)
+        && (isOwner(userId) || isAdmin())
+        && isValidUserProfile(incoming(), userId)
+        && incoming().uid == existing().uid
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && (
+          isAdmin()
+          || (
+            incoming().diff(existing()).affectedKeys().hasOnly(['name', 'theme', 'installedApp', 'creditsRemaining', 'updatedAt'])
+            && incoming().plan == existing().plan
+            && incoming().maxCredits == existing().maxCredits
+            && incoming().creditsRemaining <= existing().creditsRemaining
+          )
+        );
+
+      allow delete: if isValidId(userId) && isAdmin();
+    }
+  }
+}

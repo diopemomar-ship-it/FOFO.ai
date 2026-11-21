@@ -1,0 +1,6 @@
+{
+  "name": "FOFO AI - Création de Vidéos par IA",
+  "description": "Transformez vos idées et textes en vidéos percutantes pour TikTok, YouTube Shorts et Instagram Reels avec voix off IA, sous-titres animés et styles cinématiques.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

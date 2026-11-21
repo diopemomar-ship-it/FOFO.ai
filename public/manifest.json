@@ -1,0 +1,27 @@
+{
+  "id": "/",
+  "name": "FOFO AI - Créateur de Vidéos par IA",
+  "short_name": "FOFO AI",
+  "description": "Transformez vos idées en vidéos virales pour TikTok, YouTube Shorts et Instagram Reels avec voix off et sous-titres IA.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#07090E",
+  "theme_color": "#00D2FF",
+  "categories": ["video", "entertainment", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

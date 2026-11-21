@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="bgGradMask" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#07090E" />
+      <stop offset="100%" stop-color="#021B3A" />
+    </linearGradient>
+    <linearGradient id="electricGradMask" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00D2FF" />
+      <stop offset="100%" stop-color="#3B82F6" />
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#bgGradMask)" />
+  <!-- Central safe-zone icon with 20% margin -->
+  <g transform="translate(51, 51) scale(0.8)">
+    <path d="M280 80L160 270H260L230 432L360 230H250L280 80Z" fill="url(#electricGradMask)" />
+    <circle cx="380" cy="140" r="14" fill="#00D2FF" />
+    <circle cx="130" cy="380" r="12" fill="#3B82F6" />
+  </g>
+</svg>
